@@ -1,0 +1,123 @@
+import { Injectable } from '@nestjs/common';
+import { Create{{properCase collectionName}}ComponentInput } from './dto/create-component.input';
+import { Update{{properCase collectionName}}ComponentInput } from './dto/update-component.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { {{properCase collectionName}}Component } from './entities/{{lowerCase collectionName}}-components.entity';
+import { Repository } from 'typeorm';
+import { BadRequestException } from '@nestjs/common/exceptions';
+import { exec } from 'child_process';
+import { Collection } from 'src/collection/entities/collection.entity';
+import { runCommand } from 'src/util/command.util';
+import dataSource from 'db/data_source';
+@Injectable()
+export class {{properCase collectionName}}ComponentsService {
+  constructor(
+    @InjectRepository({{properCase collectionName}}Component)
+    private {{lowerCase collectionName}}ComponentRepository: Repository<{{properCase collectionName}}Component>,
+    @InjectRepository(Collection)
+    private readonly collectionRepository: Repository<Collection>,
+  ) {}
+
+  async create(create{{properCase collectionName}}ComponentInput: Create{{properCase collectionName}}ComponentInput) {
+    try {
+      const collection = await this.collectionRepository.findOneBy({
+        id: create{{properCase collectionName}}ComponentInput.collectionId,
+      });
+
+      if (!collection) throw new BadRequestException('Collection not found');
+
+      const obj = {
+        name: create{{properCase collectionName}}ComponentInput.name,
+        type: create{{properCase collectionName}}ComponentInput.dataType,
+      };
+
+      const jsonObj = JSON.stringify(obj);
+      const changedObject = JSON.stringify(jsonObj);
+
+      const product = await this.{{lowerCase collectionName}}ComponentRepository.create({
+        componentId: create{{properCase collectionName}}ComponentInput.componentId
+          ? create{{properCase collectionName}}ComponentInput.componentId
+          : create{{properCase collectionName}}ComponentInput.name,
+        label: create{{properCase collectionName}}ComponentInput.label
+          ? create{{properCase collectionName}}ComponentInput.label
+          : create{{properCase collectionName}}ComponentInput.name,
+        ...create{{properCase collectionName}}ComponentInput,
+      });
+      const savedProduct = await this.{{lowerCase collectionName}}ComponentRepository.save(product);
+      console.log(
+        `npm run gen:component ${collection.collectionName} ${changedObject}`,
+      );
+      await runCommand(
+        `npm run gen:component ${collection.collectionName} ${changedObject}`,
+      );
+
+      return savedProduct;
+    } catch (error) {
+      if (error.code === 'ER_DUP_ENTRY')
+        throw new BadRequestException(
+          'Component already exists with this name',
+        );
+
+      if (error.code === 'ER_NO_REFERENCED_ROW_2')
+        throw new BadRequestException('Collection not found');
+      throw new BadRequestException();
+    }
+  }
+
+  async findAll(): Promise<{{properCase collectionName}}Component[]> {
+    return await this.{{lowerCase collectionName}}ComponentRepository.find();
+  }
+
+  async find{{properCase collectionName}}Components(): Promise<{{properCase collectionName}}Component[]> {
+    return await this.{{lowerCase collectionName}}ComponentRepository.find();
+  }
+  async findOne(id: number) {
+    const product = await this.{{lowerCase collectionName}}ComponentRepository.findOneBy({ id });
+    if (!product)
+      throw new BadRequestException(`Product with id ${id} not found`);
+    return product;
+  }
+
+   async update(
+    id: number,
+    updateComponentInput: Update{{properCase collectionName}}ComponentInput,
+    collectionName: string,
+  ): Promise<{{properCase collectionName}}Component> {
+    const foundComponent = await this.{{lowerCase collectionName}}ComponentRepository.findOneBy({
+      id,
+    });
+    if (!foundComponent)
+      throw new BadRequestException(`Component with id ${id} not found`);
+    await this.{{lowerCase collectionName}}ComponentRepository.update(id, updateComponentInput);
+    const { name, dataType } = updateComponentInput;
+    const jsonObj = JSON.stringify({ name, type: dataType });
+    const changedObject = JSON.stringify(jsonObj);
+    console.log(
+      `plop updateFiled ${collectionName} ${foundComponent.name} ${changedObject}`,
+    );
+    await runCommand(
+      `plop updateFiled ${collectionName} ${foundComponent.name} ${changedObject}`,
+    );
+    return await this.{{lowerCase collectionName}}ComponentRepository.findOneBy({ id });
+  }
+
+
+async remove(id: number, collectionName: string): Promise<{{properCase collectionName}}Component> {
+    const dataSourceConnection = await dataSource.initialize();
+    const queryRunner = dataSourceConnection.createQueryRunner();
+    try {
+      const component = await this.{{lowerCase collectionName}}ComponentRepository.findOneBy({ id });
+      if (!component) throw new BadRequestException('Component not found');
+      queryRunner.connect();
+      queryRunner.dropColumn(collectionName, component.name);
+      await runCommand(`plop deleteField ${collectionName} ${component.name}`);
+      await this.{{lowerCase collectionName}}ComponentRepository.delete({ id });
+      return component;
+    } catch (error) {
+      throw new BadRequestException(`Component with id ${id} not found`);
+    } finally {
+      queryRunner.release();
+      dataSourceConnection.destroy();
+    }
+  }
+}

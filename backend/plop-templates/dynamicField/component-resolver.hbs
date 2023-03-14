@@ -1,0 +1,59 @@
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
+import { {{properCase collectionName}}ComponentsService } from './{{lowerCase collectionName}}-components.service';
+import { {{properCase collectionName}}Component } from './entities/{{lowerCase collectionName}}-components.entity';
+import { Create{{properCase collectionName}}ComponentInput } from './dto/create-component.input';
+import { Update{{properCase collectionName}}ComponentInput } from './dto/update-component.input';
+
+
+@Resolver(() => {{properCase collectionName}}Component)
+export class {{properCase collectionName}}ComponentsResolver {
+  constructor(private readonly {{lowerCase collectionName}}ComponentsService: {{properCase collectionName}}ComponentsService) {}
+
+  @Mutation(() => {{properCase collectionName}}Component)
+  create{{properCase collectionName}}Component(
+    @Args('create{{properCase collectionName}}ComponentInput') create{{properCase collectionName}}ComponentInput: Create{{properCase collectionName}}ComponentInput,
+  ) {
+    return this.{{lowerCase collectionName}}ComponentsService.create(create{{properCase collectionName}}ComponentInput);
+  }
+
+  @Query(() => [{{properCase collectionName}}Component], { name: 'findAll{{properCase collectionName}}Components' })
+  findAll(): Promise<{{properCase collectionName}}Component[]> {
+    return this.{{lowerCase collectionName}}ComponentsService.findAll();
+  }
+
+  @Query(() => [{{properCase collectionName}}Component], { name: 'findAll{{properCase collectionName}}Components' })
+  async findAllByCollectionId(
+  ): Promise<{{properCase collectionName}}Component[]> {
+    return await this.{{lowerCase collectionName}}ComponentsService.find{{properCase collectionName}}Components();
+  }
+
+ // @Query(() => {{properCase collectionName}}Component, { collectionName: 'findOne{{properCase collectionName}}Component' })
+ // findOne(@Args('id', { type: () => Int }) id: number): Promise<{{properCase collectionName}}Component> {
+ //   return this.{{lowerCase collectionName}}ComponentsService.findOne(id);
+ // }
+
+  @Mutation(() => {{properCase collectionName}}Component)
+  update{{properCase collectionName}}Component(
+    @Args('collectionName') collectionName: string,
+    @Args('update{{properCase collectionName}}ComponentInput') update{{properCase collectionName}}ComponentInput: Update{{properCase collectionName}}ComponentInput,
+  ) {
+    return this.{{lowerCase collectionName}}ComponentsService.update(
+      update{{properCase collectionName}}ComponentInput.id,
+      update{{properCase collectionName}}ComponentInput,
+       collectionName,
+    );
+  }
+
+  @Mutation(() => {{properCase collectionName}}Component)
+  remove{{properCase collectionName}}Component(@Args('id', { type: () => Int }) id: number,    @Args('collectionName') collectionName: string) {
+    return this.{{lowerCase collectionName}}ComponentsService.remove(id,collectionName);
+  }
+}

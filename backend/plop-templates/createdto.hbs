@@ -1,0 +1,16 @@
+import { InputType, Field } from '@nestjs/graphql';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  MinLength,
+} from 'class-validator';
+
+@InputType()
+export class {{properCase collectionName}}Input {
+
+  @Field({ nullable: true })
+  id: number;
+
+}

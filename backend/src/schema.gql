@@ -1,0 +1,268 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type EventComponent {
+  id: Int!
+  htmlInputType: String!
+  dataType: String!
+  name: String!
+  componentId: String
+  label: String
+}
+
+type ComponentsValue {
+  id: Int!
+  data: JSON!
+  collectionId: Int!
+  collection: Collection!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+type Component {
+  id: Int!
+  htmlInputType: String!
+  dataType: String!
+  name: String!
+  componentId: String
+  label: String
+  collectionId: Int!
+  collection: Collection!
+}
+
+type Collection {
+  id: Int!
+  collectionName: String!
+  components: [Component!]!
+  componentsValue: [ComponentsValue!]!
+}
+
+type Event {
+  id: Int!
+}
+
+type BlogComponent {
+  id: Int!
+  htmlInputType: String!
+  dataType: String!
+  name: String!
+  componentId: String
+  label: String
+}
+
+type Blog {
+  id: Int!
+  movieno: Float!
+  moviedate: String!
+  images: String!
+}
+
+type User {
+  id: String!
+  firstName: String
+  lastName: String
+  email: String!
+  password: String!
+  role: String
+}
+
+type LoginResponse {
+  access_token: String!
+  userRole: String!
+  userName: String!
+}
+
+type Query {
+  findAllEvent(FilterOptions: EventFilterInput): [Event!]!
+  findOneEvent(id: Int!): Event!
+  findAllEventComponents: [EventComponent!]!
+  findAllBlog(FilterOptions: BlogFilterInput): [Blog!]!
+  findOneBlog(id: Int!): Blog!
+  findAllBlogComponents: [BlogComponent!]!
+  findAllComponents: [Component!]!
+  findAllComponentsByCollectionId(collectionID: Int!): [Component!]!
+  findOnecomponent(id: Int!): Component!
+  FindAllCollection: [Collection!]!
+  collectionFindOne(id: Int!): Collection!
+  GetCollectionData(id: Int!): ComponentsValue!
+  user(id: String!): User!
+}
+
+input EventFilterInput {
+  page: Float = 1
+  limit: Float = 10
+  sort: String = "ASC"
+  orderBy: String
+}
+
+input BlogFilterInput {
+  page: Float = 1
+  limit: Float = 10
+  sort: String = "ASC"
+  orderBy: String
+}
+
+type Mutation {
+  createEvent(EventInput: EventInput!): Event!
+  updateEvent(updateEventInput: UpdateEventInput!): Event!
+  removeEvent(id: Int!): Event!
+  createEventComponent(createEventComponentInput: CreateEventComponentInput!): EventComponent!
+  updateEventComponent(collectionName: String!, updateEventComponentInput: UpdateEventComponentInput!): EventComponent!
+  removeEventComponent(id: Int!, collectionName: String!): EventComponent!
+  createBlog(BlogInput: BlogInput!): Blog!
+  updateBlog(updateBlogInput: UpdateBlogInput!): Blog!
+  removeBlog(id: Int!): Blog!
+  createBlogComponent(createBlogComponentInput: CreateBlogComponentInput!): BlogComponent!
+  updateBlogComponent(collectionName: String!, updateBlogComponentInput: UpdateBlogComponentInput!): BlogComponent!
+  removeBlogComponent(id: Int!, collectionName: String!): BlogComponent!
+  createComponent(createComponentInput: CreateComponentInput!): Component!
+  updateComponent(updateComponentInput: UpdateComponentInput!): Component!
+  removeComponent(id: Int!): Component!
+  createCollection(createCollectionInput: CreateCollectionInput!): Collection!
+  updateCollection(updateCollectionInput: UpdateCollectionInput!): Collection!
+  removeCollection(id: Int!): Collection!
+  createComponentsValue(createComponentsValueInput: CreateComponentsValueInput!): ComponentsValue!
+  updateComponentsValue(updateComponentsValueInput: UpdateComponentsValueInput!): ComponentsValue!
+  removeComponentsValue(id: Int!): ComponentsValue!
+  login(email: String!, password: String!): LoginResponse!
+  signUp(signupdata: CreateUserInput!): LoginResponse!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: String!): User!
+}
+
+input EventInput {
+  id: Float
+}
+
+input UpdateEventInput {
+  id: Float!
+}
+
+input CreateEventComponentInput {
+  htmlInputType: HTMLInputType! = TEXT
+  dataType: DataType! = STRING
+  name: String!
+  collectionId: Int!
+  componentId: String
+  label: String
+}
+
+"""HTML Input Types """
+enum HTMLInputType {
+  EMAIL
+  NUMBER
+  PASSWORD
+  TEXT
+  DATE
+  CHECKBOX
+}
+
+"""Data Types """
+enum DataType {
+  STRING
+  NUMBER
+  BOOLEAN
+  DATE
+}
+
+input UpdateEventComponentInput {
+  id: Int!
+  dataType: DataType
+  htmlInputType: HTMLInputType
+  name: String
+  componentId: String
+  label: String
+}
+
+input BlogInput {
+  id: Float
+  movieno: Float
+  moviedate: String
+  images: [Upload!]!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input UpdateBlogInput {
+  id: Float!
+  movieno: Float
+  moviedate: String
+  image: Upload!
+}
+
+input CreateBlogComponentInput {
+  htmlInputType: HTMLInputType! = TEXT
+  dataType: DataType! = STRING
+  name: String!
+  collectionId: Int!
+  componentId: String
+  label: String
+}
+
+input UpdateBlogComponentInput {
+  id: Int!
+  dataType: DataType
+  htmlInputType: HTMLInputType
+  name: String
+  componentId: String
+  label: String
+}
+
+input CreateComponentInput {
+  htmlInputType: HTMLInputType! = TEXT
+  dataType: DataType! = STRING
+  name: String!
+  collectionId: Int!
+  componentId: String
+  label: String
+}
+
+input UpdateComponentInput {
+  id: Int!
+  collectionId: Int!
+  dataType: HTMLInputType
+  htmlInputType: HTMLInputType
+  name: String
+  componenId: String
+  label: String
+}
+
+input CreateCollectionInput {
+  collectionName: String!
+}
+
+input UpdateCollectionInput {
+  id: Float!
+  collectionName: String!
+}
+
+input CreateComponentsValueInput {
+  data: JSON!
+  collectionId: Int!
+}
+
+input UpdateComponentsValueInput {
+  id: Int!
+  data: JSON!
+  collectionId: Int
+}
+
+input CreateUserInput {
+  firstName: String
+  lastName: String
+  email: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  firstName: String
+  lastName: String
+  email: String
+  password: String
+  id: String!
+}
