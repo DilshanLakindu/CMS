@@ -76,6 +76,12 @@ type LoginResponse {
   userName: String!
 }
 
+type Email {
+  to: String!
+  subject: String!
+  htmls: String!
+}
+
 type Query {
   findAllEvent(FilterOptions: EventFilterInput): [Event!]!
   findOneEvent(id: Int!): Event!
@@ -132,6 +138,7 @@ type Mutation {
   signUp(signupdata: CreateUserInput!): LoginResponse!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: String!): User!
+  sendEmail(input: SendEmailInput!): Email!
 }
 
 input EventInput {
@@ -265,4 +272,10 @@ input UpdateUserInput {
   email: String
   password: String
   id: String!
+}
+
+input SendEmailInput {
+  to: String!
+  subject: String!
+  htmls: String!
 }
