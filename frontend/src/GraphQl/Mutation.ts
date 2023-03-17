@@ -68,3 +68,21 @@ export const resetPassword = gql`
     }
   }
 `;
+
+export const SENT_EMAIL = gql`
+  mutation SENDMAIL($to: String!) {
+    sendEmail(input: { to: $to }) {
+      to
+    }
+  }
+`;
+
+export const UPDATEPASSWORD = gql`
+  mutation UPDATEPASSWORD($password: String!, $confirmpassword: String) {
+    updatePsw(id: $id, password: $password, confirmpassword: $confirmpassword) {
+      id
+      password
+      confirmpassword
+    }
+  }
+`;

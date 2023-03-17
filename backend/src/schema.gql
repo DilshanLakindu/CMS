@@ -137,6 +137,7 @@ type Mutation {
   login(email: String!, password: String!): LoginResponse!
   signUp(signupdata: CreateUserInput!): LoginResponse!
   updateUser(updateUserInput: UpdateUserInput!): User!
+  updatePassword(updateUserPassword: UpdateUserPsw!): User!
   removeUser(id: String!): User!
   sendEmail(input: SendEmailInput!): Email!
 }
@@ -262,20 +263,24 @@ input UpdateComponentsValueInput {
 input CreateUserInput {
   firstName: String
   lastName: String
-  email: String!
+  email: String
   password: String!
 }
 
 input UpdateUserInput {
   firstName: String
   lastName: String
-  email: String
+  email: String!
   password: String
   id: String!
 }
 
+input UpdateUserPsw {
+  email: String!
+  password: String!
+  confirmPassword: String!
+}
+
 input SendEmailInput {
   to: String!
-  subject: String!
-  htmls: String!
 }

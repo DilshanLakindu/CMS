@@ -10,10 +10,6 @@ import { setLoginResponse } from 'src/app/Redux/authSlice'
 import CustomLoader from 'src/app/components/common/CustomLoader/CustomLoader'
 const Log = require('src/app/assets/L1.png')
 
-
-
-
-
 interface IProps {
   email: string;
   password: string;
@@ -42,9 +38,9 @@ const SignIn = () => {
 
   const [login, { loading, error: loginError, data }] = useMutation(LOGINMUTATION);
 
-  const ForgetPsw = () => {
-    navigate("/forgetpsw")
-  }
+  // const ForgetPsw = () => {
+  //   navigate("/forgetpsw")
+  // }
 
   // const validate = () => {
   //     let temp: IProps = {
@@ -103,11 +99,7 @@ const SignIn = () => {
         console.log(err.message);
         setServerError(err.message);
       });
-
-
   };
-
-
 
   return (
     <main className="main-wrapper">

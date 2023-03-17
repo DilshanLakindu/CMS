@@ -5,9 +5,9 @@ export class SendEmailInput {
   @Field()
   to: string;
 
-  @Field()
-  subject: string;
+  // @Field()
+  // subject: string;
 
-  @Field()
-  htmls: string;
+  // @Field()
+  // htmls: string;
 }

@@ -3,11 +3,25 @@ import React from 'react'
 import css from '../../util'
 import { useFormik } from 'formik'
 import { basicSchema } from '../../../schemas'
+import { gql, useMutation } from '@apollo/client'
+import { UPDATEPASSWORD } from 'src/GraphQl/Mutation'
 const Log = require('src/app/assets/L1.png')
 
 const NewPsw = () => {
 
+    const [updatePsw, { loading, error }] = useMutation(UPDATEPASSWORD)
     const onSubmit = (values: any, actions: any) => {
+
+        updatePsw({
+            variables: {
+                password: values.password,
+                confirmpassword: values.confirmpassword
+            }
+        })
+            .then((res) => {
+                console.log(res)
+            })
+
         console.log(values);
         console.log(actions)
     }
@@ -31,8 +45,8 @@ const NewPsw = () => {
                                 <div className="logo-wrapper">
                                     <div className="image-wrapper is-logo">
                                         <img src={Log} loading="lazy" alt="" className="image-cover" /></div>
-                                    <div>
-                                        <span className="logo-span">Job</span>Board</div>
+                                    {/* <div>
+                                        <span className="logo-span">Job</span>Board</div> */}
                                 </div>
                                 <div className="form-wrapper">
                                     <div className="form_component is-sign-in w-form">
@@ -80,7 +94,7 @@ const NewPsw = () => {
                                                 />
                                                 {errors.confirmpassword && touched.confirmpassword && <p className="error-text">{errors.confirmpassword}</p>}
                                             </div>
-                                            <button className="button is-form-submit w-button custom-button">Sign In</button>
+                                            <button className="button is-form-submit w-button custom-button" type="submit">Sign In</button>
                                         </form>
                                     </div>
                                 </div>

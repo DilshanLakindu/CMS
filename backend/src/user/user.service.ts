@@ -13,6 +13,8 @@ import {
   ForbiddenException,
 } from '@nestjs/common/exceptions';
 import { ForbiddenError } from '@casl/ability';
+import { JwtService } from '@nestjs/jwt';
+import { UpdateUserPsw } from './dto/update-password-input';
 
 @Injectable()
 export class UserService {
@@ -20,6 +22,7 @@ export class UserService {
     private readonly caslPermission: CaslPermission,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async findOneById(id: string): Promise<User> {
@@ -77,6 +80,26 @@ export class UserService {
 
       throw error;
     }
+  }
+
+  async updatePsw({ confirmPassword, password, email }: UpdateUserPsw) {
+    try {
+      const user = await this.usersRepository.findOneBy({ email });
+
+      if (!user) {
+        throw new BadRequestException('Not Valid Email');
+      }
+      await this.usersRepository.update(
+        {
+          id: user.id,
+        },
+        { password: password },
+      );
+    } catch (error) {
+      throw new ForbiddenException('Not valid Email');
+    }
+
+    console.log(confirmPassword);
   }
 
   async deleteUser(id: string): Promise<User> {

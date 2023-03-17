@@ -2,6 +2,8 @@ import { Resolver, Mutation, Args } from '@nestjs/graphql';
 import { EmailService } from './email.service';
 import { SendEmailInput } from './dto/email.dto';
 import { Email } from './entities/email.type';
+import { JwtService } from '@nestjs/jwt';
+import { jwtAuthGuard } from 'src/auth/guard/jwt.guard';
 
 @Resolver()
 export class EmailResolver {
@@ -9,12 +11,11 @@ export class EmailResolver {
 
   @Mutation(() => Email)
   async sendEmail(@Args('input') input: SendEmailInput) {
-    const { to, subject, htmls } = input;
-    await this.emailService.sendEmail(to, subject, htmls);
+    const { to } = input;
+
+    await this.emailService.sendEmail(to);
     return {
       to,
-      subject,
-      htmls,
     };
   }
 }

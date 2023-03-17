@@ -1,16 +1,14 @@
 import React from 'react'
 import { useState } from 'react'
-import { useMutation } from '@apollo/client'
+import { gql, useMutation } from '@apollo/client'
 import { FORGOT_PASSWORD_MUTATION } from '../../../GraphQl/Auth'
 import { useNavigate } from 'react-router-dom'
 import css from '../../util'
 import { useFormik } from 'formik'
 import { ForgetPswSchema } from '../../../schemas'
+import { useDispatch } from 'react-redux'
+import { SENT_EMAIL } from 'src/GraphQl/Mutation'
 const Log = require('src/app/assets/L1.png')
-
-interface initialValues {
-    email: string
-}
 
 const ForgetPassword = () => {
 
@@ -18,13 +16,10 @@ const ForgetPassword = () => {
     const [EmailValidate, setEmail] = useState('');
     const [error, setError] = useState('')
     const [success, setSuccess] = useState(false)
+    const [serverError, setServerError] = useState<string>("");
 
-    const onSubmit = (values: any, actions: any) => {
-        console.log(values);
-        console.log(actions);
-    }
-
-    const [forgotPassword] = useMutation(FORGOT_PASSWORD_MUTATION, {
+    // const [forgetpsw, { loading, error: fgtPswError, data }] = useMutation(SENT_EMAIL)
+    const [sendEmail] = useMutation(SENT_EMAIL, {
         onCompleted: () => {
             setSuccess(true);
             setError('');
@@ -35,29 +30,28 @@ const ForgetPassword = () => {
         },
     });
 
-    const { values, errors, touched, handleBlur, handleChange } = useFormik({
+    const { values, errors, touched, handleBlur, handleChange, handleSubmit } = useFormik({
         initialValues: {
-            email: "",
+            to: "",
         },
         validationSchema: ForgetPswSchema,
         onSubmit,
     });
 
-
-    function handleSubmit(e: any): void {
+    function onSubmit(e: any): void {
         e.preventDefault();
-        forgotPassword({
+        sendEmail({
             variables: {
-                email: values.email
+                to: values.to
             }
         });
 
-        console.log("Email :", values.email)
+        console.log("Email :", values.to)
     };
 
 
-    console.log(errors);
-    console.log(values)
+    // console.log(errors);
+    // console.log(values)
 
     return (
         <main className="main-wrapper">
@@ -80,7 +74,7 @@ const ForgetPassword = () => {
                                             data-name="Form"
                                             method="get"
                                             className="form_form"
-                                            onSubmit={handleSubmit}
+                                        // onSubmit={handleSubmit}
                                         >
                                             <div className="header-wrapper">
                                                 <div className="text-size-large text-weight-bold">Forget Password</div>
@@ -92,18 +86,18 @@ const ForgetPassword = () => {
                                                 <input
                                                     type="email"
                                                     className={css(
-                                                        errors.email && touched.email ? "form_input_error" : "form_input w-input"
+                                                        errors.to && touched.to ? "form_input_error" : "form_input w-input"
                                                     )}
-                                                    maxLength={256} name="email"
+                                                    maxLength={256} name="to"
                                                     placeholder="john@doe.com"
-                                                    id="Email"
+                                                    id="to"
                                                     onChange={handleChange}
-                                                    value={values.email}
+                                                    value={values.to}
                                                     onBlur={handleBlur}
                                                 />
-                                                {errors.email && touched.email && <p className="error-text">{errors.email}</p>}
+                                                {errors.to && touched.to && <p className="error-text">{errors.to}</p>}
                                             </div>
-                                            <button type='submit' className="button is-form-submit w-button custom-button" >Continue</button>
+                                            <button type='submit' className="button is-form-submit w-button custom-button" onClick={onSubmit}>Continue</button>
 
                                         </form>
                                     </div>

@@ -13,7 +13,7 @@ export class CreateUserInput {
   @IsOptional()
   lastName: string;
 
-  @Field()
+  @Field({ nullable: true })
   @IsEmail()
   @IsNotEmpty()
   @IsString()
